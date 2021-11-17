@@ -25,3 +25,12 @@ mail:
   user: "g13ecomm@gmail.com"
   pass: "![obuxcbb3gNY+WKA6om/RkQ==]"
   
+splunk:
+  protocol: "HTTPS"
+  host: "prd-p-g5ssb.splunkcloud.com"
+  port: "8088"
+  basepath : "/services/collector"
+  retryCount: "5"
+  retryIntervalMillisecs: "300000"
+  authToken: "![JdJHJZVfJ0k5jgs0PzA7sZU0LEJFKP1qoJ7GWfrdESr7yHD7tfL4XA==]"
+  

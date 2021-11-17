@@ -11,7 +11,10 @@
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="e-comm-config" />
+        <async doc:name="Async" doc:id="190a3cd9-79e4-4ce5-b5f4-c58aca972c10" >
+			<flow-ref doc:name="Flow Reference" doc:id="9972f802-b0fa-4296-b220-c2e047cb827a" name="splunk_logging"/>
+		</async>
+		<apikit:router config-ref="e-comm-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">

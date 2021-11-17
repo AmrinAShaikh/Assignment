@@ -40,6 +40,28 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="227d9e83-c467-4d34-9137-8ff398bb0a4f" >
 		<salesforce:basic-connection username="${sfdc.username}" password="${secure::sfdc.password}" securityToken="${sfdc.token}" />
 	</salesforce:sfdc-config>
+	<http:request-config name="Splunk_Request" doc:name="HTTP Request configuration" doc:id="82665851-0fe2-4e32-a6a0-f321dfb3fedf">
+		<http:request-connection protocol="${splunk.protocol}" host="${splunk.host}" port="${splunk.port}" >
+			<reconnection >
+				<reconnect count="${splunk.retryCount}" frequency="${splunk.retryIntervalMillisecs}"/>
+			</reconnection>
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</http:request-connection>
+		<expiration-policy />
+	</http:request-config>
+	<sub-flow name="splunk_logging" doc:id="e493871d-f010-45eb-b94e-be09ca35a499" >
+		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"event":{&#10;		"requestPath": attributes.requestPath,&#10;		"requestUri": attributes.requestUri default "",&#10;		"queryString": attributes.queryString default ""&#10;	}&#10;}]' doc:name="Trigger Splunk" doc:id="832081ec-d541-437a-9e41-2dbaa5742587" />
+		<http:request method="POST" doc:name="Request" doc:id="b0b0a949-05fa-4f84-a692-f7f018c79477" config-ref="Splunk_Request" path="#[p('splunk.basepath')]" outputMimeType="application/json">
+			<http:headers ><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"Authorization":"Splunk " ++ p('secure::splunk.authToken')
+}]]]></http:headers>
+		</http:request>
+	</sub-flow>
 	<error-handler name="globalError_Handler" doc:id="311070c2-4662-4a82-b907-7c43507653a5" >
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cecf0555-ca3d-4246-91a7-debb8b36689f" type="S3:CONNECTIVITY, S3:ENTITY_TOO_LARGE, S3:ENTITY_TOO_SMALL, S3:EXPIRED_TOKEN, S3:INTERNAL_ERROR, S3:METHOD_NOT_ALLOWED, S3:REQUEST_TIMEOUT, S3:SERVICE_UNAVAILABLE, S3:SLOW_DOWN, S3:TEMPORARY_REDIRECT" >
 				<ee:transform doc:name="error.description" doc:id="bd3626a2-3d3f-4a08-a595-229cd2b2df8c" >
