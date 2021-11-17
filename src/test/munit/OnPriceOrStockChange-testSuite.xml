@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="OnPriceOrStockChange-testSuite.xml" />
+	<munit:test name="OnPriceOrStockChange-test" doc:id="a3c22d11-e865-42f0-8339-161ebf3d8b82" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="53e9da71-2e19-491c-b6aa-14cdf3080423" >
+				<munit:payload value="#[readUrl('classpath://OnPriceOrStockChangetest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://OnPriceOrStockChangetest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to OnPriceOrStockChange" doc:id="361f46f4-4fe5-40ec-8083-69caa4a70866" name="OnPriceOrStockChange"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify Send" doc:id="7dd181ce-6fbd-4e60-8a46-95eb00ba4bd4" processor="email:send" atLeast="0">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="322c6a63-22d1-4909-b8bc-781099f14b57" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Flow Reference" doc:id="cc947451-87c0-4294-8630-b8038f8dd7c4" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5a43d0e6-85bf-4342-9c40-091fd0955bf3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Select" doc:id="99b0edb4-2d85-4e1d-823f-7a358a520a99" processor="db:select" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d36e513f-b85a-4ad0-83d8-cabb36bda4da" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify JAVA to JSON" doc:id="0e341e01-7a53-496d-baee-52166f2a17b2" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="90813028-c25e-4a38-9308-ed8839086c6e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify SELECT" doc:id="de35fcda-1bfc-4b5a-853b-eeaaa97246c3" processor="db:select" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9e1d9379-53e8-4326-9cd8-84f41a476027" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="9e1d9379-53e8-4326-9cd8-84f41a476027" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify INSERT" doc:id="477a6ec8-df98-4c93-b01e-aa40fc7f1b98" processor="db:insert" atLeast="0">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="67c7b266-705e-45ad-bb0c-953aafcf2de3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Logger" doc:id="3e98986a-8f03-4d29-a072-99754c4c29b6" processor="logger" atLeast="0">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="48f84cc8-2190-48ab-88a9-9f454ded9882" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify UPDATE" doc:id="14c07273-dfd3-4125-983c-b579981295f9" processor="db:update" atLeast="0">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="48f84cc8-2190-48ab-88a9-9f454ded9882" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Logger" doc:id="2401237e-6c4b-43dc-88d5-59339d79edf1" processor="logger" atLeast="0">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Logger" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify DELETE" doc:id="e571119c-ed1e-4490-8fba-cec0ec180fa3" processor="db:delete" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2a3d19ef-1c34-4cbe-a2ab-dbbe09990191" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

@@ -1,0 +1,27 @@
+http:
+   host: "0.0.0.0"
+   port: "8081"
+   basepath: "/"
+   
+aws:
+  accesskey: "![An6gsIsNSh4vCJLbFWBYLJtnECGrAmJt]"
+  secretkey: "![K1geiMuGqUfHExIYm6se9PB2dHdHcyn3PO7xtFmG4g+W0mWyvxKjL5AK06cZdAS0]"
+  
+sfdc:
+  username: "amrin.a.shaikh@apisero.com"
+  password: "![WtKifFOx7STM7cPkPqZWFw==]"
+  token: "QEvaXWG3FVBOfohbnoZX8qmYU"
+  
+db:
+  port: "3306"
+  host: "sql6.freemysqlhosting.net"
+  username: "sql6450297"
+  password: "![Mc85u/dHS3QC4pZiNtMLrA==]"
+  name: "sql6450297"
+  
+mail:
+  host: "smtp.gmail.com"
+  port: "465"
+  user: "g13ecomm@gmail.com"
+  pass: "![obuxcbb3gNY+WKA6om/RkQ==]"
+  

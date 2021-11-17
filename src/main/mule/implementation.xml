@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getAccounts" doc:id="cad2cf88-a7f5-4d7c-ab96-fcff58975842" >
+		<salesforce:query doc:name="Query" doc:id="74de7ada-4e92-4668-a872-95d6091240e1" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query><![CDATA[SELECT Name,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,AccountNumber from Account
+	WHERE AccountNumber = ':AccountNumber']]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"AccountNumber" : attributes.queryParams.AccountNumber
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="b37ab7d5-a8b7-4b15-8328-c3c6b342e29f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getOrders" doc:id="bce73fdd-7e0f-4e99-bfc3-cf5bb58100e0" >
+		<db:select doc:name="Select" doc:id="8c7b21ff-64b4-45c1-8f86-77d5a98d40ba" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM orders]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c392745e-82da-4419-97ed-aebc36ca8183" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="putOrders" doc:id="e32f5afb-3415-46e6-90a0-75e97f57c9cf" >
+		<db:update doc:name="Update" doc:id="38691f88-533f-46d1-9fde-93a5c5230dc8" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE orders
+	SET itemId = ':itemId',quantity=':quantity'
+	WHERE orderId=':orderId']]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"orderId" : attributes.uriParams.orderId
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="55a56b1d-5a0b-4b9c-8ff5-5a351de6baf6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getOrdersById" doc:id="65c7e717-c526-4ab9-94d5-cf9e73cff3db" >
+		<db:select doc:name="Select" doc:id="80b92f96-e5bb-492a-bf3f-ead9de6011fc" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM orders
+	WHERE orderId=':orderId']]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"orderId" : attributes.uriParams.orderId
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="0043857d-f20f-44d0-9007-7ec950fe2470" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postOrders" doc:id="fadb83da-915b-4579-954f-16b868c10534" >
+		<db:insert doc:name="Insert" doc:id="6d5e12b7-4933-464b-8118-fd96996d0c1a" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO orders (itemId,userId,quantity)
+VALUES (:itemId,:userId,:quantity)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"userId" : attributes.queryParams.userId
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="ea2a41c7-c6ed-498a-b3b2-4737775233ab" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="updateUserById" doc:id="491edf1d-3b3a-4cf7-932e-276f1d58ffba" >
+		<db:update doc:name="Update" doc:id="5b339d18-cc71-4966-9603-9b3d02b8bb6c" config-ref="Database_Config" >
+			<db:sql ><![CDATA[UPDATE users
+	SET email =:email,pass=:pass,name=:name
+	WHERE userId=':userId']]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"email" : attributes.queryParams.email,
+	"pass" : attributes.queryParams.password,
+	"name" : attributes.queryParams.name,
+	"userId" : attributes.uriParams.userId
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="df64154c-b4a0-489f-8461-97425b9571e8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postUser" doc:id="dbf72208-4e42-451b-a989-f91306b0f77d" >
+		<db:insert doc:name="Insert" doc:id="c8246013-9ed7-4991-87f3-830f150f041f" config-ref="Database_Config" >
+			<db:sql ><![CDATA[INSERT INTO users (email,password,name)
+VALUES (:email,:password,:name)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"userId" : attributes.queryParams.userId
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="6e93a321-9178-4133-971a-7f6cf2ee61ae" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getWishlist" doc:id="1c36055f-6197-4137-b00a-63fbc22754ff" >
+		<db:select doc:name="Select" doc:id="f124d777-3ddc-4540-b386-c9a6cb491b3d" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM wishlist]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="1d5391fb-1018-4d29-a3ad-ccf3442db164" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postWishlist" doc:id="cf503f30-7e60-435c-919c-bbc11705d4b0" >
+		<db:insert doc:name="Insert" doc:id="62fba709-dc43-45d9-95d0-121fe7d70396" config-ref="Database_Config" >
+			<db:sql ><![CDATA[INSERT INTO wishlist (itemId,accountNumber,email)
+VALUES (:itemId,:accountNumber,:email)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"accountNumber" : attributes.queryParams.accountNumber,
+	"email" : attributes.queryParams.email
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="41cb3467-bb0e-4902-85fa-337ab2e75459" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getInventory" doc:id="b9b34e4d-1538-478f-85a1-d1b768f6a8bf" >
+		<db:select doc:name="Select" doc:id="20ee82a7-8b57-4cfe-bf5f-a704a172b113" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM inventory]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="7d3d1d40-0f65-4a0f-82e0-4c9da492771b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="putInventory" doc:id="815669d2-e17c-44d6-8e26-1e41b8dcc50b" >
+		<db:update doc:name="Update" doc:id="136bca1b-cb24-4b28-820f-661642d96c06" config-ref="Database_Config" >
+			<db:sql ><![CDATA[UPDATE inventory
+	SET itemName=:itemName,quantity=:quantity,price=:price
+	WHERE itemId=':itemId']]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"orderId" : attributes.uriParams.orderId
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="ae55e368-497f-4076-bb9b-dabecddb72ee" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getInventoryById" doc:id="d02b6605-9944-43b1-b2d4-df9366f25676" >
+		<db:select doc:name="Select" doc:id="4bdfff39-105f-475e-9135-14513d7b45a7" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM inventory
+	WHERE itemId=':itemId']]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId":attributes.uriParams.itemId
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="44311ba0-b31d-433e-8dd9-9529c65b4679" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postInventory" doc:id="bb90de3e-5ddf-4890-9eb4-f82338483dff" >
+		<db:insert doc:name="Insert" doc:id="1d66cca9-2263-4a23-b2e8-debc3a4d2de6" config-ref="Database_Config" >
+			<db:sql ><![CDATA[INSERT INTO inventory (itemId,itemName,quantity,price)
+VALUES (:itemId,:itemName,:quantity,:price)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"price" : attributes.queryParams.price
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="06f3f108-c455-48ca-ac96-48bb4d78311b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getStaging" doc:id="d7e92359-4fe5-476f-8666-375f9b606039" >
+		<db:select doc:name="Select" doc:id="c3b88c72-898f-4410-ae8c-ca88e8476a62" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM staging]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="d43157e9-241c-4971-a549-dd4495ff15f4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="postStaging" doc:id="c253f2d2-e410-4dec-8d4c-ba675b542fc4" >
+		<db:insert doc:name="Insert" doc:id="9c4beef4-e643-43c6-834e-0c32542dc5a8" config-ref="Database_Config" >
+			<db:sql ><![CDATA[INSERT INTO staging (itemId,itemName,quantity,price)
+VALUES (:itemId,:itemName,:quantity,:price)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"itemId" : attributes.queryParams.itemId,
+	"quantity" : attributes.queryParams.quantity,
+	"price" : attributes.queryParams.price
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="52569d09-c203-4f88-ab81-52371439302d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

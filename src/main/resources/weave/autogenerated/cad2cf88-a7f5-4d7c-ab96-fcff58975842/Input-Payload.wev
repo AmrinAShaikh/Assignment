@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_cad2cf88_a7f5_4d7c_ab96_fcff58975842_Input_Payload = Any
+

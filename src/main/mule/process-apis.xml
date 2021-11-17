@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="AWStoSalesforce" doc:id="8f73cb42-a9ac-4e63-83cd-6a4917b3a300" >
+		<scheduler doc:name="Scheduler" doc:id="c7e17750-0f02-4f66-bbaa-b119ce8850ad" >
+			<scheduling-strategy >
+				<cron expression="0 0 3 ? * *" timeZone="Asia/Kolkata" />
+			</scheduling-strategy>
+		</scheduler>
+		<s3:get-object doc:name="Get Accounts Data" doc:id="000958ef-e685-4e82-9f1b-92ec65b1911b" config-ref="Amazon_S3_Configuration" bucketName='#["ecom-g13"]' key='#["Accounts/Account.txt"]' outputMimeType="application/json"/>
+		<ee:transform doc:name="Flat file to Accounts" doc:id="522dccc1-d590-4970-b999-aae46fabf252">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Website: payload01.email,
+	Name: payload01.name,
+	BillingStreet: payload01.street,
+	BillingCity: payload01.city,
+	BillingState: payload01.state,
+	BillingPostalCode: payload01.postal,
+	BillingCountry: payload01.country,
+	AccountNumber: payload01.accountNumber as String
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:upsert doc:name="Upsert" doc:id="3bd13dc7-fd8a-4781-b52b-096ff42b1e31" config-ref="Salesforce_Config" objectType="Account" externalIdFieldName="Id"/>
+		<logger level="INFO" doc:name="Logger" doc:id="137c57a7-8d60-4503-b8f2-16eabd09c272" message="#[payload]"/>
+		
+
+</flow>
+	<flow name="AWStoDB" doc:id="b1e8938c-18bd-4577-aa59-886820873b61" >
+		<scheduler doc:name="Scheduler" doc:id="bcbfed23-303e-4ddf-98a2-27c6ddc369f0" >
+			<scheduling-strategy >
+				<cron expression="0 0 3 ? * *" timeZone="Asia/Kolkata" />
+			</scheduling-strategy>
+		</scheduler>
+		<s3:get-object doc:name="Get Inventory Data" doc:id="aab95cfb-935b-4aa8-bbd0-18a05f4f8187" config-ref="Amazon_S3_Configuration" bucketName='#["ecom-g13"]' key='#["Inventory-data/inventory.csv"]' outputMimeType="text/csv"/>
+		<ee:transform doc:name="CSV to JSON" doc:id="09aee050-cad3-4e89-8f56-358257ede8d2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="8fb4aadf-9b5a-49c8-a24f-8a17819d4815" collection="#[payload]">
+			<db:insert doc:name="Insert" doc:id="d0ef5d31-a064-4b78-88ff-afbb3bb332b5" config-ref="Database_Config">
+							<db:sql><![CDATA[INSERT INTO inventory VALUES(:itemId,:itemName,:quantity,:price) 
+ON DUPLICATE KEY 
+	UPDATE quantity=:quantity,price=:price]]></db:sql>
+							<db:input-parameters><![CDATA[#[{
+	"itemId" : payload.itemId,
+	"itemName" : payload.itemName,
+	"quantity" : payload.quantity,
+	"price" : payload.price
+}]]]></db:input-parameters>
+						</db:insert>
+			<logger level="INFO" doc:name="Logger" doc:id="95a225c2-e782-4a5a-8dba-cdc1c94b56cc" message="#[payload]"/>
+		</foreach>	
+</flow>
+	<flow name="OnPriceOrStockChange" doc:id="8cc265ab-9775-401a-bd7a-684fc037376b" >
+		<scheduler doc:name="Scheduler" doc:id="f593f086-7761-4c25-af33-bf9d42c63cab" >
+			<scheduling-strategy >
+				<cron expression="0 0 12 ? * *" timeZone="Asia/Kolkata" />
+			</scheduling-strategy>
+		</scheduler>
+		<db:select doc:name="Select" doc:id="d36e513f-b85a-4ad0-83d8-cabb36bda4da" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT inventory.itemName, inventory.itemId, inventory.price, ws1.email, ws1.accountNumber, "Price Change" AS STATUS FROM
+(
+ SELECT b.itemName, b.itemId, a.price
+ FROM staging_inventory a, inventory b
+ WHERE a.price <> b.price AND a.itemId = b.itemId
+)inventory
+JOIN
+(
+  SELECT email, accountNumber, itemId
+  FROM wishlist
+)ws1
+ON (
+inventory.itemId = ws1.itemId
+)
+UNION
+SELECT inventory2.itemName , inventory2.itemId , inventory2.price , ws2.email , ws2.accountNumber, "Out Of Stock" AS STATUS FROM
+(
+SELECT a.itemName , a.itemId , a.price 
+FROM inventory a, staging_inventory b
+WHERE a.quantity = '0' AND b.quantity <>'0' 
+AND a.itemId = b.itemId
+) inventory2
+JOIN
+(
+SELECT email , accountNumber, itemId
+FROM wishlist
+)ws2
+ON(
+inventory2.itemId = ws2.itemId
+)
+UNION
+SELECT inventory3.itemName , inventory3.itemId , inventory3.price , ws3.email , ws3.accountNumber, "In Stock" AS STATUS FROM
+(
+SELECT a.itemName , a.itemId , a.price 
+FROM inventory a, staging_inventory b
+WHERE a.quantity <> '0' AND b.quantity='0' 
+AND a.itemId = b.itemId
+) inventory3
+JOIN
+(
+SELECT email , accountNumber, itemId
+FROM wishlist
+)ws3
+ON(
+inventory3.itemId = ws3.itemId
+)]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="JAVA to JSON" doc:id="90813028-c25e-4a38-9308-ed8839086c6e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="1065fc00-3f80-428b-8170-d397e4d489b3">
+			<when expression="#[not isEmpty(payload.itemId)]">
+				<parallel-foreach doc:name="Send Email to all the Users" doc:id="64848466-9e56-4293-b1b6-a69a95ee4798">
+			<email:send doc:name="Send" doc:id="322c6a63-22d1-4909-b8bc-781099f14b57" config-ref="Email_SMTP" fromAddress="g13ecomm@gmail.com" subject='#[payload.itemName ++ " is "  ++ payload.STATUS]'>
+				<email:to-addresses>
+					<email:to-address value="#[payload.email]" />
+				</email:to-addresses>
+				<email:body contentType="text/html">
+					<email:content><![CDATA[#["Hello Customer, Your Item in wishlist " ++ payload.itemName ++ " is "  ++ payload.STATUS]]]></email:content>
+				</email:body>
+			</email:send>
+		</parallel-foreach>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="14ebb582-e4b5-49a7-af14-644bf2ac04ee" />
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="Flow Reference" doc:id="5a43d0e6-85bf-4342-9c40-091fd0955bf3" name="syncStagingWithInventory" />
+	</flow>
+	<flow name="syncStagingWithInventory" doc:id="462d0f8e-1425-4237-8d7f-944608c253e3">
+		
+		<db:select doc:name="Select the records to update quantity and price" doc:id="9e1d9379-53e8-4326-9cd8-84f41a476027" config-ref="Database_Config">
+						<db:sql><![CDATA[SELECT i.itemId,i.quantity,i.price from inventory i, staging_inventory s
+	WHERE i.itemId=s.itemId 
+	AND (i.quantity<>s.quantity OR i.price<>s.price)]]></db:sql>
+					</db:select>
+		<foreach doc:name="Insert if the records doesn't exist for every Item." doc:id="bb9ff497-caba-41ef-a3aa-2a1930e2a659" collection="#[payload]">
+			<db:insert doc:name="Insert" doc:id="67c7b266-705e-45ad-bb0c-953aafcf2de3" config-ref="Database_Config">
+						<db:sql><![CDATA[INSERT INTO staging_inventory
+	(SELECT * FROM inventory WHERE itemId NOT IN (SELECT DISTINCT itemId FROM staging_inventory))]]></db:sql>
+					
+</db:insert>
+			<logger level="INFO" doc:name="Logger" doc:id="9fdd0c5e-e480-43a4-a013-327dbe7d4c32" message="#[payload.affectedRows]" />
+		</foreach>
+		<foreach doc:name="Update if the records already exist for every Item." doc:id="bb098e56-a085-400f-b117-82d4df44831c" collection="#[payload]">
+			<db:update doc:name="Update" doc:id="48f84cc8-2190-48ab-88a9-9f454ded9882" config-ref="Database_Config">
+			<db:sql><![CDATA[UPDATE staging_inventory
+	SET quantity=:quantity,price=:price
+		WHERE itemId=:itemId;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	"itemId" : payload.itemId,
+	"quantity" : payload.quantity,
+	"price" : payload.price
+}]]]></db:input-parameters>
+		</db:update>
+			<logger level="INFO" doc:name="Logger" doc:id="12b5246b-b411-4e8d-8ccf-0f8acedef6df" message="#[payload.affectedRows]" />
+		</foreach>
+		<db:delete doc:name="Delete if item doesn't exist in Inventory" doc:id="2a3d19ef-1c34-4cbe-a2ab-dbbe09990191" config-ref="Database_Config">
+			<db:sql><![CDATA[DELETE FROM staging_inventory WHERE itemId NOT IN (SELECT DISTINCT itemId FROM inventory);]]></db:sql>
+		</db:delete>
+	</flow>
+	</mule>

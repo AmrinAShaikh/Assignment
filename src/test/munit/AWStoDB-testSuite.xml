@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="AWStoDB-testSuite.xml" />
+	<munit:test name="AWStoDB-test" doc:id="7118e6f3-a2a1-460e-84ba-75474edd722e" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="83ecc57e-bb9b-40da-b3f2-34e2f0a93b1d" >
+				<munit:payload value="#[readUrl('classpath://AWStoDBtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://AWStoDBtest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to AWStoDB" doc:id="f8f8d115-7c3c-44b6-8e34-13d2e1fd76e0" name="AWStoDB"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify Get Inventory Data" doc:id="25b50512-1763-4d79-9027-dd3164253fb1" processor="s3:get-object" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="aab95cfb-935b-4aa8-bbd0-18a05f4f8187" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify CSV to JSON" doc:id="cd9c3430-99b8-4601-b485-4bbb54b576ef" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="09aee050-cad3-4e89-8f56-358257ede8d2" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Logger" doc:id="5e7e08d2-cddd-4b4f-9a73-e20d5d8ed582" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="95a225c2-e782-4a5a-8dba-cdc1c94b56cc" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Insert" doc:id="43941bb3-6a37-4509-98a7-f58ec7b0525f" processor="db:insert" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d0ef5d31-a064-4b78-88ff-afbb3bb332b5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

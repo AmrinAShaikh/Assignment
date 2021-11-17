@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="AWStoSalesforce-testSuite.xml" />
+	<munit:test name="AWStoSalesforce-test" doc:id="3b518955-2eec-4771-bb17-16385363e23b" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="a2418358-66a6-47ba-aba8-ce1126e049dd" >
+				<munit:payload value="#[readUrl('classpath://AWStoSalesforcetest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://AWStoSalesforcetest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to AWStoSalesforce" doc:id="b7ecd7c8-9069-4911-be9a-87b7486533eb" name="AWStoSalesforce"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify Logger" doc:id="24251aa1-3d22-43db-9f6a-bc368cb7c12f" processor="logger" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="137c57a7-8d60-4503-b8f2-16eabd09c272" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Upsert" doc:id="dad393e1-f00a-4020-ae00-4657ca4e9a4e" processor="salesforce:upsert" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3bd13dc7-fd8a-4781-b52b-096ff42b1e31" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Flat file to Accounts" doc:id="3727c713-e013-4ec9-a54f-1be5144d83eb" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="522dccc1-d590-4970-b999-aae46fabf252" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Get Accounts Data" doc:id="6af5d4e5-407d-4e5d-8872-04b4982b3a2f" processor="s3:get-object" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="000958ef-e685-4e82-9f1b-92ec65b1911b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

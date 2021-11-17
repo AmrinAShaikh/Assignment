@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<http:listener-config name="G-13-httpListenerConfig" basePath="${http.basepath}">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+    <configuration-properties doc:name="Configuration properties" doc:id="fbe0bc13-21b9-4bb4-a683-217143c4c98b" file="config.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="2a130c07-d33f-422c-8261-e517821ab503" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.username}" password="${secure::db.password}" database="${db.name}"/>
+	</db:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="4cc200c9-4f80-4bc1-bbba-a7a85b1ddf06" >
+		<email:smtps-connection host="${mail.host}" port="${mail.port}" user="${mail.user}" password="${secure::mail.pass}" >
+			<tls:context >
+				<tls:trust-store insecure="true"/>
+				<tls:key-store algorithm="TLSv1.2,SSLv3" />
+			</tls:context>
+		</email:smtps-connection>
+	</email:smtp-config>
+	<s3:config name="Amazon_S3_Configuration" doc:name="Amazon S3 Configuration" doc:id="d1dded5c-d7d1-434f-80b6-fa3a4e31077f" >
+		<s3:basic-connection accessKey="${secure::aws.accesskey}" secretKey="${secure::aws.secretkey}" region="AP_SOUTH_1" />
+	</s3:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="422b65d1-772e-4bcc-9c12-c08764530567" file="config.yaml" key='mulesoft' >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="227d9e83-c467-4d34-9137-8ff398bb0a4f" >
+		<salesforce:basic-connection username="${sfdc.username}" password="${secure::sfdc.password}" securityToken="${sfdc.token}" />
+	</salesforce:sfdc-config>
+	<error-handler name="globalError_Handler" doc:id="311070c2-4662-4a82-b907-7c43507653a5" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cecf0555-ca3d-4246-91a7-debb8b36689f" type="S3:CONNECTIVITY, S3:ENTITY_TOO_LARGE, S3:ENTITY_TOO_SMALL, S3:EXPIRED_TOKEN, S3:INTERNAL_ERROR, S3:METHOD_NOT_ALLOWED, S3:REQUEST_TIMEOUT, S3:SERVICE_UNAVAILABLE, S3:SLOW_DOWN, S3:TEMPORARY_REDIRECT" >
+				<ee:transform doc:name="error.description" doc:id="bd3626a2-3d3f-4a08-a595-229cd2b2df8c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : error.description as String + ", Please try again later."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="200" doc:name="httpStatus" doc:id="d9f5fc94-ad7e-4afe-a652-cdf64377bef9" variableName="httpStatus" />
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b7d8627f-11b9-4720-bedc-30eb194510e5" type="SALESFORCE:CONNECTIVITY, SALESFORCE:INVALID_RESPONSE, SALESFORCE:LIMIT_EXCEEDED, SALESFORCE:MUTUAL_AUTHENTICATION_FAILED, SALESFORCE:NOT_FOUND, SALESFORCE:RETRY_EXHAUSTED, SALESFORCE:TIMEOUT" >
+				<ee:transform doc:name="error.description" doc:id="1890f15a-caa0-4d4d-9430-1ae4be97a472" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : error.description as String + ", Please try again later."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="200" doc:name="httpStatus" doc:id="e57c9b5b-d60e-4bc4-899d-3cda6557cdff" variableName="httpStatus" />
+			</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d08dca2b-f5a5-4fed-887b-3a23ecb46c6d" type="DB:CONNECTIVITY, DB:RETRY_EXHAUSTED">
+								<ee:transform doc:name="error.description" doc:id="6f4712c1-d0f2-4b22-933c-3338cc274565" >
+									<ee:message >
+										<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : error.description as String + ", Please try again later."
+}]]></ee:set-payload>
+									</ee:message>
+								</ee:transform>
+								<set-variable value="200" doc:name="httpStatus" doc:id="6f8b673e-6b2c-4eeb-87d1-868ad12be62a" variableName="httpStatus" />
+							</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0d58a4c0-6ddd-4901-89a6-39ea2a399504" type="ANY">
+			<ee:transform doc:name="error.description" doc:id="13248432-c3b8-4c96-b0a9-ca6e601bfbc6">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message" : error.description as String + ", Please contact Admin."
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-variable value="500" doc:name="httpStatus" doc:id="33ca2d20-f72f-4872-889c-ff1ce6d199e4" variableName="httpStatus" />
+		</on-error-continue>
+		</error-handler>
+	</mule>
