@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="global-test-suite.xml" />
+	<munit:test name="global-test-suite-splunk_loggingTest" doc:id="907032d7-9c79-4aee-a189-704d3a68597a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="65c305b8-36fd-4267-970e-0768f4e05a25" processor="set-payload">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"event":{&#10;		"requestPath": attributes.requestPath,&#10;		"requestUri": attributes.requestUri default "",&#10;		"queryString": attributes.queryString default ""&#10;	}&#10;}]' attributeName="value" />
+					<munit-tools:with-attribute whereValue="Trigger Splunk" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="832081ec-d541-437a-9e41-2dbaa5742587" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to splunk_logging" doc:id="fec34d40-6ad3-405e-86f2-93e212e301fb" name="splunk_logging"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="531dff58-9e76-4e93-b583-c866278d4c5d" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b0b0a949-05fa-4f84-a692-f7f018c79477" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Splunk_Request" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

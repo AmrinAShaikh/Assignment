@@ -15,9 +15,9 @@ sfdc:
 db:
   port: "3306"
   host: "sql6.freemysqlhosting.net"
-  username: "sql6450297"
-  password: "![Mc85u/dHS3QC4pZiNtMLrA==]"
-  name: "sql6450297"
+  username: "sql6451977"
+  password: "![pBhnRZwLDcapdi0d5YUJaw==]"
+  name: "sql6451977"
   
 mail:
   host: "smtp.gmail.com"

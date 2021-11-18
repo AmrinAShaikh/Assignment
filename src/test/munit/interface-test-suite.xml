@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="interface-test-suite.xml" />
+	<munit:test name="interface-test-suite-get:\accounts:e-comm-configTest" doc:id="00f458d2-d968-48ac-8fea-92a9b3a78b91" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="29fee068-2e54-441c-9a01-0195e659f21f" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7c6de692-b034-4092-8fe2-992f361ef880" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getAccounts" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\accounts:e-comm-config" doc:id="7534264a-a0da-4eed-9395-9f4953bcc9a4" name="get:\accounts:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="14b79948-dce9-4ea7-a84c-9f87ad3956c1" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7c6de692-b034-4092-8fe2-992f361ef880" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getAccounts" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\orders:e-comm-configTest" doc:id="c59e732f-933b-4e52-84a6-9f3fe2f16326" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="709a1360-ba06-4573-92e4-5be8dc747767" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="010e0df6-70d9-44d1-bb09-e4b8b22aa58f" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getOrders" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\orders:e-comm-config" doc:id="0bdeedac-b3e4-4ecc-957e-5f0c60abab46" name="get:\orders:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="2a5633bc-f376-47d3-8cec-f0a29236fef8" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="010e0df6-70d9-44d1-bb09-e4b8b22aa58f" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getOrders" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-put:\orders\(orderId):application\json:e-comm-configTest" doc:id="8108dbeb-c2b2-408b-9359-fe71d7b7d297" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="961e6d6c-b0e5-4530-bd36-b982ead444ac" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="ef9a9b53-5aed-4927-9bba-ee548a4855ba" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="putOrders" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\orders\(orderId):application\json:e-comm-config" doc:id="682cc609-d319-4537-94f5-9aadee1c8cdb" name="put:\orders\(orderId):application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="656ba2c5-cd54-4389-9e16-20c03e8b2c3d" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="ef9a9b53-5aed-4927-9bba-ee548a4855ba" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="putOrders" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\orders\(orderId):e-comm-configTest" doc:id="ab0829dc-d5d4-45e5-ac91-4263e74d08c5" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9657e4c8-d766-46e0-adaa-c5c4dbd62783" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="4ee8c0f6-3c79-472b-b57a-64b132229b0e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getOrdersById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\orders\(orderId):e-comm-config" doc:id="35c3755c-c4c6-42ab-999c-d2d060faa898" name="get:\orders\(orderId):e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="e60ce37a-bb9f-4257-a5f4-800a87bceb1f" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="4ee8c0f6-3c79-472b-b57a-64b132229b0e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getOrdersById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\orders:application\json:e-comm-configTest" doc:id="bdfcc465-34b9-427d-99df-0b03f869af72" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a2e41f9b-7740-4a69-a4ec-00c72a122239" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e35be0bf-8dad-42f4-82fa-2334c96d3e03" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postOrders" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\orders:application\json:e-comm-config" doc:id="cc801b5b-6c16-4c0a-9e84-bcd707ef6181" name="post:\orders:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="d6a1d6b2-f8cb-48ae-a340-902d910d6be4" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="4ee8c0f6-3c79-472b-b57a-64b132229b0e" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getOrdersById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\users:application\json:e-comm-configTest" doc:id="9acab6d5-124e-4093-a878-d105a11e3a5c" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="7cd747be-5bbd-4d61-ad9c-0c5f2b3e6ac1" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="094e0141-bb63-422e-a734-46b06dfdc461" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\users:application\json:e-comm-config" doc:id="866963b3-99b3-419a-a8df-6c69ec456bf1" name="post:\users:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="e05efecc-26bc-4627-a8b7-7b246eb3aec2" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="094e0141-bb63-422e-a734-46b06dfdc461" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-put:\users\(userId):application\json:e-comm-configTest" doc:id="0fdd0ac8-d8fb-49aa-a5e6-6f8335cfc21c" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="57393bc5-f3eb-489c-87a0-535ca1c9d8f6" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="a93df0c2-67f3-4f96-9989-3162ccb6c72b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="updateUserById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\users\(userId):application\json:e-comm-config" doc:id="be67b8a6-46eb-4acc-bc2d-74dfae0c8c19" name="put:\users\(userId):application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="4a8f4cf3-e9b9-4f2d-af71-b2559a6225b4" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="a93df0c2-67f3-4f96-9989-3162ccb6c72b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="updateUserById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-delete:\users\(userId):application\json:e-comm-configTest" doc:id="a4fe96bf-e7bd-4680-90d3-4c66d8ebfdd0" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="aecd461e-5827-4b2a-a8e8-38860dc8e7a2" processor="flow">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="delete:\users\(userId):application\json:e-comm-config" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete:\users\(userId):application\json:e-comm-config" doc:id="330b520d-bfae-4535-9d71-39a827c7dab0" name="delete:\users\(userId):application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="f9c7b425-fc5d-4121-a1db-63b2ceea8e4b" processor="flow">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="delete:\users\(userId):application\json:e-comm-config" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\wishlist:e-comm-configTest" doc:id="b4030487-ab27-40c3-9d96-ddf21bdf1d49" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a86c3b6e-a10b-448e-b8df-d7ad59a91514" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7e768483-fa59-45c1-959c-d2b9e357a390" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\wishlist:e-comm-config" doc:id="708e8b70-09e7-4718-97d7-bd75a6cea814" name="get:\wishlist:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="4abb59d6-864e-409a-9d30-de95820e27d0" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7e768483-fa59-45c1-959c-d2b9e357a390" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\wishlist:application\json:e-comm-configTest" doc:id="deffdc62-ed5e-4e74-9d68-9112e5b8526d" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="29d91d1a-8062-4af3-a539-194fcd9e4fcb" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="cd39d6f2-a851-48a8-ba8f-d7f032a8622a" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\wishlist:application\json:e-comm-config" doc:id="f0e8245e-edb6-4852-b9e4-56194f930b3b" name="post:\wishlist:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="de962e96-34d9-4000-96be-d77d141eed6e" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="cd39d6f2-a851-48a8-ba8f-d7f032a8622a" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postWishlist" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\inventory:e-comm-configTest" doc:id="e395e344-1985-464a-9fa6-489bcbcf01a4" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0acced59-8533-4cbf-af80-459ebc3b1449" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="850661d0-9549-478a-a5e5-3cd59de86a7d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\inventory:e-comm-config" doc:id="74e45256-13da-426c-92b6-e3fa9e545f5b" name="get:\inventory:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="bb5c4041-ecae-4253-9f93-da58f2f1fa44" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="850661d0-9549-478a-a5e5-3cd59de86a7d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-put:\inventory\(itemId):application\json:e-comm-configTest" doc:id="9998cb40-bc24-418d-afee-0d83dd5088bb" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9f73d9e1-7654-449b-892b-567d74bab68d" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="3a8d8308-be46-468c-a710-62a394888e36" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="putInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to put:\inventory\(itemId):application\json:e-comm-config" doc:id="9e0e7cf8-f4cd-483f-9391-ade3b6f50f4b" name="put:\inventory\(itemId):application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="cea2a8d6-bf96-49f4-88ca-868afeda3e8d" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="3a8d8308-be46-468c-a710-62a394888e36" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="putInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\inventory\(itemId):e-comm-configTest" doc:id="06390bf8-52a4-498d-aa1c-ceb9cd64f33c" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="be2fe903-75b3-42f1-ab2d-1c72c470b588" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="5182f427-c509-49db-b070-dc1466451e94" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getInventoryById" attributeName="name" />
+					<munit-tools:with-attribute whereValue="GET/inventoryById" attributeName="target" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\inventory\(itemId):e-comm-config" doc:id="744ccef8-476a-4230-9185-b01e22358a83" name="get:\inventory\(itemId):e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="2040c567-36f2-4994-acd7-6e21ec8dd3a3" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="5182f427-c509-49db-b070-dc1466451e94" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getInventoryById" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\inventory:application\json:e-comm-configTest" doc:id="85d5999d-8e9a-4b6b-9647-ba5f15dc3cca" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e3b009f7-41a6-47fc-9fc2-dfa4ac4de778" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="24363c39-a891-4898-bf16-aea9731d730b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\inventory:application\json:e-comm-config" doc:id="81d69b9e-0a22-4454-a3eb-46ef25404bbb" name="post:\inventory:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="4fd7ce11-6e67-484a-8ec9-6d400261a398" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="24363c39-a891-4898-bf16-aea9731d730b" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postInventory" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-get:\staging:e-comm-configTest" doc:id="fd27ffc4-2a44-461b-91fd-d82b03d092d7" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1d635dd0-d8f4-45c3-a5bd-0ba6668156f8" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="1a7db784-65cc-4eb3-8127-c072c41b8f34" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="getStaging" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\staging:e-comm-config" doc:id="2bb5cfee-b25f-4b9c-929e-5360531a3b01" name="get:\staging:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="a81d3953-a807-4876-b831-b9c2ea5756d4" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\staging:application\json:e-comm-configTest" doc:id="9ca0e177-3be3-4e4c-9642-c3a2b43ea6a1" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0df72d95-44d9-43ad-aa84-8119f0c60cd0" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7ec9e960-91ed-425c-adaa-5ba7fe3ed8dc" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postStaging" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\staging:application\json:e-comm-config" doc:id="e9b88c6f-d359-4c0a-a309-5e69d203b857" name="post:\staging:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="4fd79f3c-8f12-4c6d-98de-3b8255d9ab5c" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Flow Reference" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="7ec9e960-91ed-425c-adaa-5ba7fe3ed8dc" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="postStaging" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="interface-test-suite-post:\payment:application\json:e-comm-configTest" doc:id="14e161d7-c05a-46a8-84b2-a1979cf2a197" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="f2465600-3c52-410b-8fbe-10df9a7ce116" processor="flow">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="post:\payment:application\json:e-comm-config" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\payment:application\json:e-comm-config" doc:id="fca1f411-eef2-484a-a26e-19f43e83e0e9" name="post:\payment:application\json:e-comm-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="62b4d12c-fefd-41df-9ae3-12c02c234fcb" processor="flow">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="post:\payment:application\json:e-comm-config" attributeName="name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

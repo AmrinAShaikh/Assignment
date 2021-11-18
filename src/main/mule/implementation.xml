@@ -250,7 +250,7 @@ payload
 	</flow>
 	<flow name="getStaging" doc:id="d7e92359-4fe5-476f-8666-375f9b606039" >
 		<db:select doc:name="Select" doc:id="c3b88c72-898f-4410-ae8c-ca88e8476a62" config-ref="Database_Config" >
-			<db:sql ><![CDATA[SELECT * FROM staging]]></db:sql>
+			<db:sql ><![CDATA[SELECT * FROM staging_inventory]]></db:sql>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="d43157e9-241c-4971-a549-dd4495ff15f4" >
 			<ee:message >
@@ -264,7 +264,7 @@ payload
 	</flow>
 	<flow name="postStaging" doc:id="c253f2d2-e410-4dec-8d4c-ba675b542fc4" >
 		<db:insert doc:name="Insert" doc:id="9c4beef4-e643-43c6-834e-0c32542dc5a8" config-ref="Database_Config" >
-			<db:sql ><![CDATA[INSERT INTO staging (itemId,itemName,quantity,price)
+			<db:sql ><![CDATA[INSERT INTO staging_inventory (itemId,itemName,quantity,price)
 VALUES (:itemId,:itemName,:quantity,:price)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
 	"itemId" : attributes.queryParams.itemId,

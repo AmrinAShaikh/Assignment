@@ -14,11 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<flow name="AWStoSalesforce" doc:id="8f73cb42-a9ac-4e63-83cd-6a4917b3a300" >
-		<scheduler doc:name="Scheduler" doc:id="c7e17750-0f02-4f66-bbaa-b119ce8850ad" >
-			<scheduling-strategy >
-				<cron expression="0 0 3 ? * *" timeZone="Asia/Kolkata" />
-			</scheduling-strategy>
-		</scheduler>
+		<http:listener doc:name="Listener" doc:id="d47f5b6a-c72b-4250-ba4e-3eac0002a7fc" config-ref="G-13-httpListenerConfig" path="/test"/>
 		<s3:get-object doc:name="Get Accounts Data" doc:id="000958ef-e685-4e82-9f1b-92ec65b1911b" config-ref="Amazon_S3_Configuration" bucketName='#["ecom-g13"]' key='#["Accounts/Account.txt"]' outputMimeType="application/json"/>
 		<ee:transform doc:name="Flat file to Accounts" doc:id="522dccc1-d590-4970-b999-aae46fabf252">
 			<ee:message>
@@ -44,11 +40,8 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 
 </flow>
 	<flow name="AWStoDB" doc:id="b1e8938c-18bd-4577-aa59-886820873b61" >
-		<scheduler doc:name="Scheduler" doc:id="bcbfed23-303e-4ddf-98a2-27c6ddc369f0" >
-			<scheduling-strategy >
-				<cron expression="0 0 3 ? * *" timeZone="Asia/Kolkata" />
-			</scheduling-strategy>
-		</scheduler>
+		<http:listener doc:name="Listener" doc:id="bb6d5311-a025-46f0-b7bb-7c70d4ca0ca9" config-ref="G-13-httpListenerConfig" path="/test1"/>
+		
 		<s3:get-object doc:name="Get Inventory Data" doc:id="aab95cfb-935b-4aa8-bbd0-18a05f4f8187" config-ref="Amazon_S3_Configuration" bucketName='#["ecom-g13"]' key='#["Inventory-data/inventory.csv"]' outputMimeType="text/csv"/>
 		<ee:transform doc:name="CSV to JSON" doc:id="09aee050-cad3-4e89-8f56-358257ede8d2" >
 			<ee:message >
@@ -74,11 +67,7 @@ ON DUPLICATE KEY
 		</foreach>	
 </flow>
 	<flow name="OnPriceOrStockChange" doc:id="8cc265ab-9775-401a-bd7a-684fc037376b" >
-		<scheduler doc:name="Scheduler" doc:id="f593f086-7761-4c25-af33-bf9d42c63cab" >
-			<scheduling-strategy >
-				<cron expression="0 0 12 ? * *" timeZone="Asia/Kolkata" />
-			</scheduling-strategy>
-		</scheduler>
+		<http:listener doc:name="Listener" doc:id="23aa1a92-3995-4c62-ad90-9f77b1c9d083" config-ref="G-13-httpListenerConfig" path="/test2"/>
 		<db:select doc:name="Select" doc:id="d36e513f-b85a-4ad0-83d8-cabb36bda4da" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT inventory.itemName, inventory.itemId, inventory.price, ws1.email, ws1.accountNumber, "Price Change" AS STATUS FROM
 (

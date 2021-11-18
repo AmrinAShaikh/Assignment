@@ -69,9 +69,20 @@
 				<configuration>
 					<coverage>
 						<runCoverage>true</runCoverage>
+						<requiredApplicationCoverage>75</requiredApplicationCoverage>
+						<requiredResourceCoverage>50</requiredResourceCoverage>
+						<requiredFlowCoverage>75</requiredFlowCoverage>
 						<formats>
 							<format>html</format>
 						</formats>
+						<ignoreFlows>
+							<ignoreFlow>e-comm-main</ignoreFlow>
+							<ignoreFlow>e-comm-console</ignoreFlow>
+						</ignoreFlows>
+						<ignoreFiles>
+							<ignoreFile>global.xml</ignoreFile>
+							<ignoreFile>implementation.xml</ignoreFile>
+						</ignoreFiles>
 					</coverage>
 				</configuration>
 			</plugin>
